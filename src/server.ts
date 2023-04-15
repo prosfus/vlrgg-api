@@ -9,7 +9,7 @@ const port = process.env.PORT || 1313;
 const app = express();
 const cache = apicache.middleware;
 
-app.use(cache("1 day"));
+//app.use(cache("1 day"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

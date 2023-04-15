@@ -44,13 +44,13 @@ const getEvents = async (req: Request, res: Response) => {
 // @desc   GET event
 // @route  GET /api/events/:url
 // @access Public
-const getEvent = async (req: Request, res: Response) => {
+/*const getEvent = async (req: Request, res: Response) => {
   console.log(req.query.url);
   res.status(200);
   return;
   const event = await scrapeEvent(req.params.url);
   res.status(200).json(event);
-};
+};*/
 
 // @desc   GET upcoming matches
 // @route  GET /api/matches/upcoming
@@ -80,7 +80,6 @@ export {
   getRankings,
   getPlayers,
   getEvents,
-  getEvent,
   getUpcomingMatches,
   getMatchResults,
   getMatch,

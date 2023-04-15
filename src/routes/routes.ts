@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  getEvent,
   getEvents,
   getMatch,
   getMatchResults,
@@ -17,11 +16,11 @@ router.get("/rankings/:region", getRankings);
 // Get All Players
 router.get("/players", getPlayers);
 
-// Get All Ongoing Events
+// Get All Ongoing Events or Specific Event
 router.get("/events", getEvents);
 
 // Get Specific Event
-router.get("/events/:url", getEvent);
+// router.get("/events/:url", getEvent);
 
 // Get Upcoming matches
 router.get("/matches/upcoming", getUpcomingMatches);
