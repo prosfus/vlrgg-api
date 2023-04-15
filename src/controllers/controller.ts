@@ -8,6 +8,7 @@ import {
   scrapeTeams,
   scrapeUpcomingMatches,
 } from "../vlr-scraper.js";
+import { log } from "console";
 
 // @desc   GET rankings
 // @route  GET /api/rankings/:region
@@ -29,6 +30,13 @@ const getPlayers = async (req: Request, res: Response) => {
 // @route  GET /api/events
 // @access Public
 const getEvents = async (req: Request, res: Response) => {
+  const url = req.query.url;
+  if (url) {
+    console.log(url);
+    const event = await scrapeEvent(url);
+    res.status(200).json(event);
+    return;
+  }
   const events = await scrapeEvents();
   res.status(200).json(events);
 };
@@ -37,6 +45,9 @@ const getEvents = async (req: Request, res: Response) => {
 // @route  GET /api/events/:url
 // @access Public
 const getEvent = async (req: Request, res: Response) => {
+  console.log(req.query.url);
+  res.status(200);
+  return;
   const event = await scrapeEvent(req.params.url);
   res.status(200).json(event);
 };

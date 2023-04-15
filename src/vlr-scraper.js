@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { time } from "console";
+import { log, time } from "console";
 
 const url =
   "https://www.vlr.gg/167364/zeta-division-vs-leviat-n-champions-tour-2023-lock-in-s-o-paulo-omega-ro16";
@@ -195,7 +195,13 @@ async function scrapeEvents() {
 
 async function scrapeEvent(event_url) {
   // Fetch the data
-  const { data } = await axios.get(`${event_url}`);
+  let data;
+  try {
+    data = await axios.get(event_url);
+    console.log("Success");
+  } catch (error) {
+    console.log("Error");
+  }
 
   // Load up the html
   const $ = cheerio.load(data);

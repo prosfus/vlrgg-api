@@ -5,7 +5,7 @@ import routes from "./routes/routes.js";
 
 dotenv.config();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 1313;
 const app = express();
 const cache = apicache.middleware;
 
