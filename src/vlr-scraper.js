@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { log, time } from "console";
 
 const url =
   "https://www.vlr.gg/167364/zeta-division-vs-leviat-n-champions-tour-2023-lock-in-s-o-paulo-omega-ro16";
@@ -28,6 +27,7 @@ const eventInfo = {
   teams: [],
   upcoming_matches: [],
   latest_results: [],
+  standings: [],
 };
 
 const upcomingMatches = {
@@ -148,6 +148,7 @@ async function scrapeTeams(region) {
 }
 
 async function scrapeEvents() {
+  eventsInfo.events = [];
   // Fetch the data
   const { data } = await axios.get(`https://www.vlr.gg/events`);
 
@@ -185,30 +186,16 @@ async function scrapeEvents() {
         region: $(element).find("div.mod-location i").attr("class").slice(-2),
       });
     });
-
-  if (eventsInfo.events.length > 0) {
-    return eventsInfo;
-  } else {
-    return "Data scrape taking too long";
-  }
+  console.log("All events: ", eventsInfo.events.length);
+  return eventsInfo;
 }
 
 async function scrapeEvent(event_url) {
   // Fetch the data
-  let data;
-  try {
-    data = await axios.get(event_url);
-    console.log("Success");
-  } catch (error) {
-    console.log("Error");
-  }
-
-  // Load up the html
+  teamsInfo.teams = [];
+  const { data } = await axios.get(`https://${event_url}`); // Load up the html
   const $ = cheerio.load(data);
-  const item = $("div#wrapper");
-
-  // Extract the data that we need
-
+  const item = $("div#wrapper"); // Extract the data that we need
   eventInfo.event_name = $(item)
     .find(
       "#wrapper > div.col-container > div > div.wf-card.mod-event.mod-header.mod-full > div.event-header > div.event-desc > div > h1"
@@ -244,9 +231,40 @@ async function scrapeEvent(event_url) {
       "#wrapper > div.col-container > div > div.wf-card.mod-event.mod-header.mod-full > div.event-header > div.event-desc > div > div.event-desc-items > div.event-desc-item.mod-last > div.event-desc-item-value"
     )
     .text()
-    .trim();
+    .trim(); // standings
+  $(item)
+    .find("#regular-season-regular-season > table > tbody > tr")
+    .each((index, element) => {
+      let teamName = $(element)
+        .find("td:nth-child(1) > div > a > div")
+        .text()
+        .trim();
+      const pattern = /^(.*)\s+\w+/;
+      const match = teamName.match(pattern);
 
-  // populate teams
+      if (match) {
+        teamName = match[1].trim();
+      }
+      eventInfo.standings.push({
+        team_name: teamName,
+        team_url:
+          "www.vlr.gg" +
+          $(element).find("td:nth-child(1) > div > a").attr("href"),
+        team_logo_url: $(element)
+          .find("td:nth-child(1) > div > a > img")
+          .attr("src")
+          .replace("//", "https://"),
+        team_wins: $(element).find("td:nth-child(3)").text().trim(),
+        team_losses: $(element).find("td:nth-child(4)").text().trim(),
+        team_maps: $(element).find("td:nth-child(5)").text().trim(),
+        team_rounds: $(element).find("td:nth-child(6)").text().trim(),
+        team_rounds_diferential: $(element)
+          .find("td:nth-child(7)")
+          .text()
+          .trim(),
+      });
+    }); // populate teams
+
   $(item)
     .find(
       "#wrapper > div.col-container > div > div.event-container > div.event-content > div.event-teams-container div.event-team"
@@ -256,11 +274,10 @@ async function scrapeEvent(event_url) {
         team_name: $(element).find("a.event-team-name").text().trim(),
         team_logo_url: $(element)
           .find("div.event-team-players img")
-          .attr("src"),
+          .attr("src")
+          .replace("//", "https://"),
       });
-    });
-
-  // Populate upsoming matches
+    }); // Populate upsoming matches
   $(item)
     .find(
       "#wrapper > div.col-container > div > div.event-container > div.event-sidebar > div > div:nth-child(2) > a"
@@ -279,9 +296,7 @@ async function scrapeEvent(event_url) {
           .trim(),
         ETA: $(element).find("div.eta").text().trim(),
       });
-    });
-
-  // Populate latest results
+    }); // Populate latest results
   $(item)
     .find(
       "#wrapper > div.col-container > div > div.event-container > div.event-sidebar > div > div:nth-child(5) > a"
@@ -311,7 +326,6 @@ async function scrapeEvent(event_url) {
         ETA: $(element).find("div.eta").text().trim(),
       });
     });
-
   return eventInfo;
 }
 

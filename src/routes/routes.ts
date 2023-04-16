@@ -6,6 +6,7 @@ import {
   getPlayers,
   getRankings,
   getUpcomingMatches,
+  getVCT,
 } from "../controllers/controller.js";
 
 const router = express.Router();
@@ -18,6 +19,8 @@ router.get("/players", getPlayers);
 
 // Get All Ongoing Events or Specific Event
 router.get("/events", getEvents);
+
+router.get("/vct", getVCT);
 
 // Get Specific Event
 // router.get("/events/:url", getEvent);

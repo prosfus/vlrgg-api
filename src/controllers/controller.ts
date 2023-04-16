@@ -9,6 +9,7 @@ import {
   scrapeUpcomingMatches,
 } from "../vlr-scraper.js";
 import { log } from "console";
+import { getAllVct } from "../getAllVct.js";
 
 // @desc   GET rankings
 // @route  GET /api/rankings/:region
@@ -76,6 +77,15 @@ const getMatch = async (req: Request, res: Response) => {
   res.status(200).json(match);
 };
 
+// @desc   GET vct
+// @route  GET /api/vct
+// @access Public
+const getVCT = async (req: Request, res: Response) => {
+  console.log("Getting VCT...");
+  const vct = await getAllVct();
+  res.status(200).json(vct);
+};
+
 export {
   getRankings,
   getPlayers,
@@ -83,4 +93,5 @@ export {
   getUpcomingMatches,
   getMatchResults,
   getMatch,
+  getVCT,
 };
