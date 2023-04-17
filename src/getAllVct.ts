@@ -1,6 +1,6 @@
-import { scrapeEvents } from "./vlr-scraper.js";
+import { scrapeEvents } from "./vlr-scraper-ts.js";
 
-interface Event {
+export interface Event {
   event_name: string;
   event_url: string;
   event_logo: string;
@@ -10,8 +10,8 @@ interface Event {
 }
 
 export const getAllVct = async () => {
-  const allEvents = (await scrapeEvents()).events as Event[];
-  let vct = allEvents.filter((event) =>
+  const events = await scrapeEvents();
+  let vct = events.filter((event) =>
     event.event_name.includes("Champions Tour")
   );
   vct = vct.map((event) => {

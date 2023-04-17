@@ -1,15 +1,13 @@
 import { Response, Request } from "express";
 import {
-  scrapeEvent,
-  scrapeEvents,
   scrapeMatch,
   scrapeMatchResults,
   scrapePlayers,
   scrapeTeams,
   scrapeUpcomingMatches,
 } from "../vlr-scraper.js";
-import { log } from "console";
 import { getAllVct } from "../getAllVct.js";
+import { scrapeEvent, scrapeEvents } from "../vlr-scraper-ts.js";
 
 // @desc   GET rankings
 // @route  GET /api/rankings/:region
@@ -31,7 +29,7 @@ const getPlayers = async (req: Request, res: Response) => {
 // @route  GET /api/events
 // @access Public
 const getEvents = async (req: Request, res: Response) => {
-  const url = req.query.url;
+  const url = req.query.url as string;
   if (url) {
     console.log(url);
     const event = await scrapeEvent(url);
