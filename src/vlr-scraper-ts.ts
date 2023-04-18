@@ -97,10 +97,14 @@ export async function scrapeEvent(event_url: string) {
     .text()
     .trim();
   // standings
+
+  const isPacific = event_url.includes("champions-tour-2023-pacific-league");
+  const id = !isPacific
+    ? "#regular-season-regular-season"
+    : "#league-play-regular-season";
   $(item)
-    .find("#regular-season-regular-season > table > tbody > tr")
+    .find(`${id} > table > tbody > tr`)
     .each((index, element) => {
-      console.log(element);
       let teamName = $(element)
         .find("td:nth-child(1) > div > a > div")
         .text()
@@ -112,6 +116,7 @@ export async function scrapeEvent(event_url: string) {
         teamName = match[1].trim();
       }
       eventInfo.standings.push({
+        id: teamName,
         team_name: teamName,
         team_url:
           "www.vlr.gg" +
@@ -121,8 +126,8 @@ export async function scrapeEvent(event_url: string) {
             .find("td:nth-child(1) > div > a > img")
             .attr("src")
             ?.replace("//", "https://") ?? "",
-        team_wins: $(element).find("td:nth-child(3)").text().trim(),
-        team_losses: $(element).find("td:nth-child(4)").text().trim(),
+        team_wins: $(element).find(`td:nth-child(2)`).text().trim(),
+        team_losses: $(element).find(`td:nth-child(3)`).text().trim(),
         team_maps: $(element).find("td:nth-child(5)").text().trim(),
         team_rounds: $(element).find("td:nth-child(6)").text().trim(),
         team_rounds_diferential: $(element)

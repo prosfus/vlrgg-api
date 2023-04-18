@@ -21,6 +21,7 @@ export interface LatestResult {
 }
 
 export interface Standing {
+  id: string;
   team_name: string;
   team_url: string;
   team_logo_url: string;
